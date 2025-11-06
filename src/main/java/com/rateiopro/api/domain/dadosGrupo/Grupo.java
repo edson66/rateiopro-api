@@ -25,6 +25,7 @@ public class Grupo {
     private String descricao;
     @Column(name = "codigo_convite")
     private String codigoConvite;
+    private boolean ativo = true;
 
     @OneToMany(mappedBy = "grupo")
     private List<UsuarioGrupo> membrosDoGrupo;

@@ -3,6 +3,7 @@ package com.rateiopro.api.domain.dadosUsuario;
 import com.rateiopro.api.domain.dadosDespesa.Despesa;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -10,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class Usuario implements UserDetails {
     private String nome;
     private String email;
     private String senha;
+    private boolean ativo = true;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_roles",
             joinColumns = @JoinColumn(name = "usuario_id"),
@@ -43,6 +46,14 @@ public class Usuario implements UserDetails {
     @UpdateTimestamp
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
+
+    public Usuario(@NotBlank String email, @NotBlank String nome, String senhaCodificada,Role role) {
+        this.email = email;
+        this.nome = nome;
+        this.senha = senhaCodificada;
+        this.roles = new ArrayList<>();
+        this.roles.add(role);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

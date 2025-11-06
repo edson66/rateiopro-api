@@ -1,6 +1,6 @@
 package com.rateiopro.api.domain.dadosUsuario;
 
-public enum Roles {
+public enum AppRole {
     ROLE_ADMIN,
     ROLE_USER
 }

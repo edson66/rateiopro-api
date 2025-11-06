@@ -27,5 +27,5 @@ public class UsuarioGrupo {
     @JoinColumn(name = "grupo_id")
     private Grupo grupo;
     @Enumerated(EnumType.STRING)
-    private PerfilGrupo perfilGrupo;
+    private PerfilGrupo perfil;
 }

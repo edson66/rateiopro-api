@@ -19,10 +19,10 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Enumerated(EnumType.STRING)
-    private Roles roles;
+    private AppRole nome;
 
     @Override
     public String getAuthority() {
-        return roles.name();
+        return nome.name();
     }
 }

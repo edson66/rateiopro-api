@@ -33,6 +33,7 @@ public class Despesa {
     @ManyToOne
     @JoinColumn(name = "pago_por_usuario_id")
     private Usuario pagoPorUsuario;
+    private boolean ativo = true;
     @CreationTimestamp
     @Column(name = "created_at",nullable = false,updatable = false)
     private LocalDateTime createdAt;
