@@ -3,6 +3,7 @@ package com.rateiopro.api.domain.dadosGrupo;
 import com.rateiopro.api.domain.dadosDespesa.Despesa;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,4 +39,10 @@ public class Grupo {
     @UpdateTimestamp
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
+
+    public Grupo(@NotBlank String nome, String descricao) {
+
+        this.nome = nome;
+        this.descricao = descricao;
+    }
 }
