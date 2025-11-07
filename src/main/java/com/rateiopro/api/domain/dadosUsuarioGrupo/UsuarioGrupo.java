@@ -28,4 +28,10 @@ public class UsuarioGrupo {
     private Grupo grupo;
     @Enumerated(EnumType.STRING)
     private PerfilGrupo perfil;
+
+    public UsuarioGrupo(Usuario usuario, Grupo grupo, PerfilGrupo perfilGrupo) {
+        this.usuario = usuario;
+        this.grupo = grupo;
+        this.perfil = perfilGrupo;
+    }
 }

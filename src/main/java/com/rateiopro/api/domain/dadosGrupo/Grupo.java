@@ -41,8 +41,21 @@ public class Grupo {
     private LocalDateTime updatedAt;
 
     public Grupo(@NotBlank String nome, String descricao) {
-
         this.nome = nome;
         this.descricao = descricao;
+    }
+
+    public void atualizarInformacoes(DadosAtualizacaoGrupo dados) {
+        if (dados.nome() != null) {
+            this.nome = dados.nome();
+        }
+
+        if (dados.descricao() != null) {
+            this.descricao = dados.descricao();
+        }
+    }
+
+    public void excluir() {
+        this.ativo = false;
     }
 }
