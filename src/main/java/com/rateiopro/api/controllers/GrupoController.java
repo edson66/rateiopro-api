@@ -7,6 +7,7 @@ import com.rateiopro.api.domain.dadosUsuario.UsuarioService;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.PerfilGrupo;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,43 +53,36 @@ public class GrupoController {
     @GetMapping("/meus")
     public ResponseEntity<Page<DadosCompletosGrupo>> listarGrupos(@PageableDefault(size = 20,sort = {"id"})Pageable pageable,
                                                                   @AuthenticationPrincipal Usuario usuario){
-        var gruposDaPessoa = grupoRepository.findByUsuario(usuario,pageable).map(DadosCompletosGrupo::new);
+        var gruposDaPessoa = grupoRepository.findGruposAtivosByUsuario(usuario,pageable)
+                .map(DadosCompletosGrupo::new);
 
         return ResponseEntity.ok(gruposDaPessoa);
-
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity listarGrupos(@AuthenticationPrincipal Usuario usuario,@PathVariable Long id){
+    public ResponseEntity listarGrupoPorId(@AuthenticationPrincipal Usuario usuario,@PathVariable Long id){
 
-
-
-        //perguntar sobre o tratamento desse metodo
-
-
-
-
-        var grupo = grupoService.bucarGrupoPorId(usuario,id);
+        var grupo = grupoService.bucarGrupoAtivoPorId(usuario,id);
 
         return ResponseEntity.ok(new DadosCompletosGrupo(grupo));
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{idGrupo}")
     @Transactional
-    public ResponseEntity atualizarGrupo(@RequestBody DadosAtualizacaoGrupo dados,@PathVariable Long id,
+    public ResponseEntity atualizarGrupo(@RequestBody DadosAtualizacaoGrupo dados,@PathVariable Long idGrupo,
                                          @AuthenticationPrincipal Usuario usuario){
-        var grupo = grupoService.bucarGrupoPorId(usuario,id);
+        var grupo = grupoService.buscarGrupoParaDono(usuario.getId(),idGrupo);
 
         grupo.atualizarInformacoes(dados);
 
         return ResponseEntity.ok(new DadosAtualizacaoGrupo(grupo));
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity deletarGrupo(@PathVariable Long id,@AuthenticationPrincipal Usuario usuario){
-        var grupo = grupoService.bucarGrupoPorId(usuario,id);
+        var grupo = grupoService.buscarGrupoParaDono(usuario.getId(),id);
 
         grupo.excluir();
 
@@ -97,35 +91,38 @@ public class GrupoController {
 
     @PostMapping("/entrar")
     @Transactional
-    public ResponseEntity criarGrupo(@RequestBody @Valid DadosEntrarNoGrupo dados,
+    public ResponseEntity entrarNoGrupo(@RequestBody @Valid DadosEntrarNoGrupo dados,
                                      @AuthenticationPrincipal Usuario usuario){
 
         var grupo = grupoRepository.findByCodigoConvite(dados.codigoConvite());
+
+        if (grupo == null || !grupo.isAtivo()){
+            throw new EntityNotFoundException("Código de convite inválido ou grupo inativo.");
+        }
+
+        if (usuarioGrupoRepository.existsByUsuarioAndGrupo(usuario,grupo)){
+            throw new RuntimeException("Você já faz parte deste grupo.");
+        }
 
         var usuarioGrupo = new UsuarioGrupo(usuario,grupo, PerfilGrupo.MEMBRO);
         usuarioGrupoRepository.save(usuarioGrupo);
 
 
-
-
-        //perguntar se esse response entity ta ok
-
-
-
-
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/id/sair")
+    @DeleteMapping("/{id}/sair")
     @Transactional
     public ResponseEntity sairDoGrupo(@PathVariable Long id,@AuthenticationPrincipal Usuario usuario){
-        var grupo = grupoService.bucarGrupoPorId(usuario,id);
 
-        var usuarioGrupo = usuarioGrupoRepository.getReferenceById(id);
+        var usuarioGrupo = usuarioGrupoRepository.findByUsuarioIdAndGrupoId(usuario.getId(), id)
+                .orElseThrow(() -> new EntityNotFoundException("O Usuário não pertence ao grupo requisitado"));
 
+        if (usuarioGrupo.getPerfil() == PerfilGrupo.DONO){
+            throw new RuntimeException("O dono não pode sair do grupo,apenas excluir");
+        }
         usuarioGrupoRepository.delete(usuarioGrupo);
 
-        //perguntar sobre esse Response Entity também
         return ResponseEntity.noContent().build();
     }
     
