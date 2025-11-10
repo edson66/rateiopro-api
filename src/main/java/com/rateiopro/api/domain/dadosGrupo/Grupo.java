@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "grupos")
@@ -43,6 +44,7 @@ public class Grupo {
     public Grupo(@NotBlank String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
+        this.codigoConvite = UUID.randomUUID().toString().substring(0,6).toUpperCase();
     }
 
     public void atualizarInformacoes(DadosAtualizacaoGrupo dados) {
@@ -57,5 +59,9 @@ public class Grupo {
 
     public void excluir() {
         this.ativo = false;
+    }
+
+    public void reativar() {
+        this.ativo = true;
     }
 }

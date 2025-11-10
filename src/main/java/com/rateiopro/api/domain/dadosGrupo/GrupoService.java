@@ -38,4 +38,19 @@ public class GrupoService {
 
         return usuarioGrupo.getGrupo();
     }
+
+    public void reativarGrupoParaDono(Long usuarioId,Long grupoId){
+
+        var usuarioGrupo = usuarioGrupoRepository.findByUsuarioIdAndGrupoId(usuarioId,grupoId)
+                .orElseThrow(() -> new EntityNotFoundException("Grupo não encontrado"));
+
+        if (usuarioGrupo.getPerfil().equals(PerfilGrupo.MEMBRO)){
+            throw new RuntimeException("Apenas o dono do grupo pode reativar o grupo");
+        }
+
+        Grupo grupo = repository.findByIdAndAtivoFalse(grupoId)
+                .orElseThrow(() -> new EntityNotFoundException("Grupo não encontrado ou já está ativo"));
+
+        grupo.reativar();
+    }
 }

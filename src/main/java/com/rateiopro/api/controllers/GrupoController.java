@@ -94,7 +94,7 @@ public class GrupoController {
     public ResponseEntity entrarNoGrupo(@RequestBody @Valid DadosEntrarNoGrupo dados,
                                      @AuthenticationPrincipal Usuario usuario){
 
-        var grupo = grupoRepository.findByCodigoConvite(dados.codigoConvite());
+        var grupo = grupoRepository.findByCodigoConviteAndAtivoTrue(dados.codigoConvite());
 
         if (grupo == null || !grupo.isAtivo()){
             throw new EntityNotFoundException("Código de convite inválido ou grupo inativo.");
@@ -124,6 +124,14 @@ public class GrupoController {
         usuarioGrupoRepository.delete(usuarioGrupo);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/reativar")
+    @Transactional
+    public ResponseEntity reativarGrupo(@PathVariable Long idGrupo,@AuthenticationPrincipal Usuario usuario){
+        grupoService.reativarGrupoParaDono(usuario.getId(), idGrupo);
+
+        return ResponseEntity.ok().build();
     }
     
 }

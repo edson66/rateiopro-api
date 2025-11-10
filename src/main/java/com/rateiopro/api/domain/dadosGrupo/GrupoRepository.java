@@ -17,8 +17,10 @@ public interface GrupoRepository extends JpaRepository<Grupo,Long> {
     @Query("SELECT ug.grupo FROM UsuarioGrupo ug WHERE ug.usuario = :usuario AND ug.grupo.ativo=true")
     Page<Grupo> findGruposAtivosByUsuario(@Param("usuario") Usuario usuario,Pageable pageable);
 
-    Grupo findByCodigoConvite(@NotBlank String s);
+    Grupo findByCodigoConviteAndAtivoTrue(@NotBlank String s);
 
     @Query("SELECT ug.grupo FROM UsuarioGrupo ug WHERE ug.usuario = :usuario AND ug.grupo.ativo = true AND ug.grupo.id = :id")
     Optional<Grupo> findByIdAndUsuarioAndAtivoTrue(@Param("id") Long id,@Param("usuario") Usuario usuario);
+
+    Optional<Grupo> findByIdAndAtivoFalse(Long grupoId);
 }

@@ -45,4 +45,24 @@ public class Despesa {
         this.grupo = grupo;
         this.pagoPorUsuario = usuario;
     }
+
+    public void atualizarInformacoes(DadosAtualizacaoDespesa dados) {
+        if(dados.descricao() != null){
+            this.descricao = dados.descricao();
+        }
+        if(dados.valor() != null){
+            this.valor = dados.valor();
+        }
+        if(dados.data() != null){
+            this.data = dados.data();
+        }
+    }
+
+    public void desativar() {
+        this.ativo = false;
+    }
+
+    public void reativar() {
+        this.ativo = true;
+    }
 }
