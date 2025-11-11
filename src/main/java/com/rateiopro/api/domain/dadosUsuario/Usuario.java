@@ -21,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Getter
+@Setter
 public class Usuario implements UserDetails {
 
     @Id

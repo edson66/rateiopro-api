@@ -18,6 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Getter
+@Setter
 public class Grupo {
 
     @Id

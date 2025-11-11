@@ -7,4 +7,7 @@ public record DadosCadastroGrupo(
         String nome,
         String descricao
 ) {
+    public DadosCadastroGrupo(Grupo grupoASerCriado) {
+        this(grupoASerCriado.getNome(), grupoASerCriado.getDescricao());
+    }
 }
