@@ -3,13 +3,13 @@ package com.rateiopro.api.domain.dadosUsuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record DadosCadastroUsuario(
-        @NotBlank
+public record DadosAtualizacaoUsuario(
         @Email
         String email,
-        @NotBlank
         String nome,
-        @NotBlank
         String senha
 ) {
+    public DadosAtualizacaoUsuario(Usuario usuario) {
+        this(usuario.getEmail(), usuario.getNome(), "suaSenha");
+    }
 }

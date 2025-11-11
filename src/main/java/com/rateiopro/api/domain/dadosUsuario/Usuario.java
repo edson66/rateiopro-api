@@ -89,4 +89,24 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public void atualizarDados(DadosAtualizacaoUsuario dados,String senha) {
+        if (dados.email() != null){
+            this.email = dados.email();
+        }
+        if (dados.nome() != null){
+            this.nome = dados.nome();
+        }
+        if (dados.senha() != null){
+            this.senha = senha;
+        }
+    }
+
+    public void desativar() {
+        this.ativo = false;
+    }
+
+    public void ativar(){
+        this.ativo = true;
+    }
 }
