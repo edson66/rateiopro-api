@@ -126,7 +126,7 @@ public class GrupoController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/reativar")
+    @PutMapping("/{idGrupo}/reativar")
     @Transactional
     public ResponseEntity reativarGrupo(@PathVariable Long idGrupo,@AuthenticationPrincipal Usuario usuario){
         grupoService.reativarGrupoParaDono(usuario.getId(), idGrupo);

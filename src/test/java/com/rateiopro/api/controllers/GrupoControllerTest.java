@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rateiopro.api.domain.dadosGrupo.*;
 import com.rateiopro.api.domain.dadosUsuario.Usuario;
 import com.rateiopro.api.domain.dadosUsuario.UsuarioRepository;
+import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupoRepository;
 import com.rateiopro.api.security.TokenService;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -165,10 +165,49 @@ class GrupoControllerTest {
     }
 
     @Test
-    void entrarNoGrupo() {
+    void entrarNoGrupo() throws Exception {
+        var grupoASerCriado = new Grupo();
+        grupoASerCriado.setId(1L);
+        grupoASerCriado.setNome("teste");
+        grupoASerCriado.setDescricao("grupo para testes");
+
+        var dados = new DadosEntrarNoGrupo("TESTE");
+
+        var jsonRequest = objectMapper.writeValueAsString(dados);
+
+        when(grupoRepository.findByCodigoConviteAndAtivoTrue(dados.codigoConvite())).thenReturn(grupoASerCriado);
+
+        var request = post("/grupos/entrar")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+                .with(csrf());
+        var response = mvc.perform(request);
+
+        response.andExpect(status().isOk());
+        verify(usuarioGrupoRepository,times(1)).save(any(UsuarioGrupo.class));
     }
 
     @Test
-    void sairDoGrupo() {
+    void reativarGrupo() throws Exception {
+        var usuarioMock = new Usuario();
+        usuarioMock.setId(1L);
+
+        var token = new UsernamePasswordAuthenticationToken(usuarioMock,
+                null,usuarioMock.getAuthorities());
+
+        Long idParaReativar = 2L;
+
+        doNothing().when(grupoService).reativarGrupoParaDono(eq(usuarioMock.getId()),eq(idParaReativar));
+
+        var request = put("/grupos/2/reativar")
+                .with(csrf())
+                .with(authentication(token));
+        var response = mvc.perform(request);
+
+        response.andExpect(status().isOk());
+        verify(grupoService,times(1)).reativarGrupoParaDono(
+                eq(usuarioMock.getId()),
+                eq(idParaReativar)
+        );
     }
 }
