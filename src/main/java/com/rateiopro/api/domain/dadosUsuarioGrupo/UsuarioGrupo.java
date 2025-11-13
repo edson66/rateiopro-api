@@ -3,10 +3,7 @@ package com.rateiopro.api.domain.dadosUsuarioGrupo;
 import com.rateiopro.api.domain.dadosGrupo.Grupo;
 import com.rateiopro.api.domain.dadosUsuario.Usuario;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -15,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Getter
+@Setter
 public class UsuarioGrupo {
 
     @Id

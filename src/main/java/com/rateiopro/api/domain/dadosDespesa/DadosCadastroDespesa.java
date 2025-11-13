@@ -14,4 +14,7 @@ public record DadosCadastroDespesa(
         @NotNull
         LocalDate data
 ) {
+    public DadosCadastroDespesa(Despesa despesaEnviada) {
+        this(despesaEnviada.getDescricao(), despesaEnviada.getValor(),despesaEnviada.getData());
+    }
 }

@@ -94,7 +94,7 @@ public class DespesaController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("despesas/{id}/reativar")
+    @PutMapping("despesas/{idDespesa}/reativar")
     @Transactional
     public ResponseEntity reativarDespesa(@PathVariable Long idDespesa,@AuthenticationPrincipal Usuario usuario){
 
