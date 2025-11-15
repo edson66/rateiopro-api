@@ -1,5 +1,6 @@
 package com.rateiopro.api.domain.dadosGrupo;
 
+import com.rateiopro.api.domain.dadosDespesa.DespesaRepository;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.PerfilGrupo;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupoRepository;
@@ -24,6 +25,9 @@ class GrupoServiceTest {
 
     @Mock
     private UsuarioGrupoRepository usuarioGrupoRepository;
+
+    @Mock
+    private DespesaRepository despesaRepository;
 
     @InjectMocks
     private GrupoService grupoService;

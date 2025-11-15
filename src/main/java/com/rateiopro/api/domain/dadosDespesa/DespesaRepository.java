@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -15,4 +16,6 @@ public interface DespesaRepository extends JpaRepository<Despesa,Long> {
     Optional<Despesa> findByIdAndAtivoTrue(Long id);
 
     Optional<Despesa> findByIdAndAtivoFalse(Long idDespesa);
+
+    List<Despesa> findByGrupoAndAtivoTrue(Grupo grupo);
 }

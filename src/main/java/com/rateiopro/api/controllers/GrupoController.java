@@ -133,5 +133,16 @@ public class GrupoController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}/balanco")
+    public ResponseEntity calcularBalanco(@PathVariable Long id,
+                                          @AuthenticationPrincipal Usuario usuario){
+
+        var grupo = grupoService.bucarGrupoAtivoPorId(usuario,id);
+
+        var balanco = grupoService.calcularBalanco(grupo);
+
+        return ResponseEntity.ok(balanco);
+    }
     
 }
