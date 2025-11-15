@@ -31,7 +31,7 @@ public class Usuario implements UserDetails {
     private String email;
     private String senha;
     private boolean ativo = true;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_roles",
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

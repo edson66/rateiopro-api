@@ -8,9 +8,10 @@ public record DadosCompletosGrupo(
         Long id,
         @NotBlank
         String nome,
-        String descricao
+        String descricao,
+        String codigoConvite
 ) {
     public DadosCompletosGrupo(Grupo grupo) {
-        this(grupo.getId(), grupo.getNome(), grupo.getDescricao());
+        this(grupo.getId(), grupo.getNome(), grupo.getDescricao(), grupo.getCodigoConvite());
     }
 }

@@ -1,6 +1,7 @@
 package com.rateiopro.api.domain.tratadorExcessoes;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -32,6 +33,11 @@ public class TratadorExcessoes {
         var erros = ex.getFieldErrors();
 
         return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity cadastroDuplicado(DataIntegrityViolationException ex){
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     private record DadosErroValidacao(String campo,String mensagem){
