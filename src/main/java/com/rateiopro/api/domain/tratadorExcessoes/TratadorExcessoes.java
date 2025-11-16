@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 @RestControllerAdvice
 public class TratadorExcessoes {
 
@@ -37,7 +39,7 @@ public class TratadorExcessoes {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity cadastroDuplicado(DataIntegrityViolationException ex){
-        return ResponseEntity.badRequest().body(ex.getMessage());
+        return ResponseEntity.badRequest().body(Map.of("erro","Este email já está sendo utilizado"));
     }
 
     private record DadosErroValidacao(String campo,String mensagem){
