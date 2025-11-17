@@ -1,0 +1,36 @@
+version: '3.8'
+
+
+services:
+
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rateio_api_db
+
+    healthcheck:
+      test: [ "CMD","mysqladmin","ping","-h","localhost","-proot" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    container_name: rateioPro_api
+    restart: on-failure
+    depends-on:
+      - db
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/rateio_api_db?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SENHA_SECRETA: 2222222
