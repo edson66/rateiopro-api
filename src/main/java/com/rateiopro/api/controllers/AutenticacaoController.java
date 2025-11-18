@@ -46,10 +46,8 @@ public class AutenticacaoController {
     @PostMapping("/login")
     @Transactional
     public ResponseEntity login(@RequestBody @Valid DadosLoginUsuario dados){
-        var usuario = usuarioRepository.findByEmail(dados.email());
-        if (!usuario.isAtivo()){
-            throw new RuntimeException("Usuário inativo.");
-        }
+        var usuario = usuarioRepository.findByEmailAndAtivoTrue(dados.email());
+
         var usuarioAutenticado = manager.authenticate(new UsernamePasswordAuthenticationToken(dados.email(),dados.senha()));
         var tokenJWT = tokenService.gerarToken(usuarioAutenticado.getName());
 

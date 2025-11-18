@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestClient;
 
 @Configuration
 public class SecurityConfiguration {
@@ -28,6 +29,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers(HttpMethod.POST,"/auth/login").permitAll();
                     auth.requestMatchers(HttpMethod.POST,"/auth/cadastrar").permitAll();
                     auth.requestMatchers("/swagger-ui.html","/swagger-ui/**","/v3/api-docs/**").permitAll();
+                    auth.requestMatchers("/login/**","/github/**").permitAll();
                     auth.anyRequest().authenticated();
                 })
 
@@ -43,5 +45,10 @@ public class SecurityConfiguration {
     @Bean
     public PasswordEncoder encoder(){
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public RestClient restClient(RestClient.Builder restClientBuilder){
+        return restClientBuilder.build();
     }
 }
