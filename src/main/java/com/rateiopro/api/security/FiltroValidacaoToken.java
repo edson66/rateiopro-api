@@ -29,7 +29,7 @@ public class FiltroValidacaoToken extends OncePerRequestFilter {
 
         if (tokenJWT != null) {
             var email = tokenService.validarToken(tokenJWT);
-            var usuario = usuarioRepository.findByEmail(email);
+            var usuario = usuarioRepository.findByEmailAndAtivoTrue(email);
 
             var autenticacao = new UsernamePasswordAuthenticationToken(usuario,null,usuario.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(autenticacao);
