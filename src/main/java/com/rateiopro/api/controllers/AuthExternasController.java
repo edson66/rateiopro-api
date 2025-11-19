@@ -33,7 +33,7 @@ public class AuthExternasController {
 
     @GetMapping("/github")
     public ResponseEntity<Void> redirecionarParaGithub(){
-        var url = service.gerarUrl();
+        var url = service.gerarUrlGithub();
 
         var header = new HttpHeaders();
         header.setLocation(URI.create(url));
@@ -42,8 +42,37 @@ public class AuthExternasController {
     }
 
     @GetMapping("/github/autorizado")
-    public ResponseEntity obterDadosEAutenticar(@RequestParam String code){
-        var email = service.buscarEmail(code);
+    public ResponseEntity obterDadosEAutenticarGithub(@RequestParam String code){
+        var email = service.buscarEmailGithub(code);
+
+        var usuario = usuarioRepository.findByEmailAndAtivoTrue(email);
+
+        if (usuario == null){
+            throw new RuntimeException("Não existe uma conta atrelada à este email!");
+        }
+
+        var authentication = new UsernamePasswordAuthenticationToken(usuario,null,usuario.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        var tokenJWT = tokenService.gerarToken(email);
+
+        return ResponseEntity.ok(new TokenDto(tokenJWT));
+    }
+
+    @GetMapping("/google")
+    public ResponseEntity<Void> redirecionarParaGoogle(){
+        var url = service.gerarUrlGoogle();
+
+        var header = new HttpHeaders();
+        header.setLocation(URI.create(url));
+
+        return new ResponseEntity<>(header, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/google/autorizado")
+    public ResponseEntity obterDadosEAutenticarGoogle(@RequestParam String code){
+        var email = service.buscarEmailGoogle(code);
 
         var usuario = usuarioRepository.findByEmailAndAtivoTrue(email);
 

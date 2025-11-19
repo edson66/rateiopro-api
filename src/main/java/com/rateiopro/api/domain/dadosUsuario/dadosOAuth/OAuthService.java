@@ -1,6 +1,9 @@
 package com.rateiopro.api.domain.dadosUsuario.dadosOAuth;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,38 +15,48 @@ import java.util.Map;
 @Service
 public class OAuthService {
 
-    private final String clientId = "Ov23linyAKO82cuQJtUn";
+    @Value("${github.client-id}")
+    private String githubClientId;
 
-    private final String clientSecret = "1b7d6d3e630fbd39f0587a96d16beb1409aefd36";
+    @Value("${github.client-secret}")
+    private String githubClientSecret;
 
-    private final String redirect_uri = "http://localhost:8080/login/github/autorizado";
+    @Value("${google.client-id}")
+    private String googleClientId;
+
+    @Value("${google.client-secret}")
+    private String googleClientSecret;
+
+    private final String redirectUriGithub = "http://localhost:8080/login/github/autorizado";
+
+    private final String redirectUriGoogle = "http://localhost:8080/login/google/autorizado";
 
     @Autowired
     private RestClient client;
 
-    public String gerarUrl(){
+    public String gerarUrlGithub(){
         return "https://github.com/login/oauth/authorize"+
-                "?client_id="+clientId+
-                "&redirect_uri="+redirect_uri+
+                "?client_id="+githubClientId+
+                "&redirect_uri="+redirectUriGithub+
                 "&scope=read:user,user:email";
     }
 
-    public String gerarToken(String code){
+    public String gerarTokenGithub(String code){
 
         var response = client.post()
                 .uri("https://github.com/login/oauth/access_token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Map.of("client_id",clientId,"client_secret",clientSecret,
-                        "code",code,"redirect_uri",redirect_uri))
+                .body(Map.of("client_id",githubClientId,"client_secret",githubClientSecret,
+                        "code",code,"redirect_uri",redirectUriGithub))
                 .retrieve()
                 .body(Map.class);
 
         return response.get("access_token").toString();
     }
 
-    public String buscarEmail(String code){
-        var token = gerarToken(code);
+    public String buscarEmailGithub(String code){
+        var token = gerarTokenGithub(code);
 
         var header = new HttpHeaders();
         header.setBearerAuth(token);
@@ -70,4 +83,34 @@ public class OAuthService {
             Boolean verified,
             String visibility
     ){}
+
+    public String gerarUrlGoogle(){
+        return "https://accounts.google.com/o/oauth2/v2/auth"+
+                "?client_id="+googleClientId+
+                "&redirect_uri="+redirectUriGoogle+
+                "&scope=https://www.googleapis.com/auth/userinfo.email"+
+                "&response_type=code";
+    }
+
+    public String gerarTokenGoogle(String code){
+
+        var response = client.post()
+                .uri("https://oauth2.googleapis.com/token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(Map.of("client_id",googleClientId,"client_secret",googleClientSecret,
+                        "code",code,"redirect_uri",redirectUriGoogle,"grant_type","authorization_code"))
+                .retrieve()
+                .body(Map.class);
+
+        return response.get("id_token").toString();
+    }
+
+    public String buscarEmailGoogle(String code){
+        var token = gerarTokenGoogle(code);
+
+        DecodedJWT decodedJWT = JWT.decode(token);
+
+        return decodedJWT.getClaim("email").asString();
+    }
 }
