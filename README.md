@@ -4,7 +4,7 @@ O RateioPro é uma API de gerenciamento financeiro de grupos, inspirada em ferra
 
 A aplicação foi desenvolvida seguindo os princípios de Design Orientado a Domínio (DDD) e arquitetura em camadas, com foco em segurança, testes robustos, lógica de negócio precisa (`BigDecimal`) e práticas modernas de DevOps.
 
-## ⚙️ Tecnologias Utilizadas
+## ️ Tecnologias Utilizadas
 
 | Categoria | Tecnologia | Justificativa |
 | :--- | :--- | :--- |
