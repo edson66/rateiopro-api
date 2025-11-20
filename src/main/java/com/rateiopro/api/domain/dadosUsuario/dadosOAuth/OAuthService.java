@@ -27,9 +27,9 @@ public class OAuthService {
     @Value("${google.client-secret}")
     private String googleClientSecret;
 
-    private final String redirectUriGithub = "http://localhost:8080/login/github/autorizado";
+    private final String redirectUriGithub = "https://rateiopro-api.onrender.com/login/github/autorizado";
 
-    private final String redirectUriGoogle = "http://localhost:8080/login/google/autorizado";
+    private final String redirectUriGoogle = "https://rateiopro-api.onrender.com/login/google/autorizado";
 
     @Autowired
     private RestClient client;
