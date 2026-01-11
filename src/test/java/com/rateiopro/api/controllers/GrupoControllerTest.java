@@ -3,6 +3,7 @@ package com.rateiopro.api.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rateiopro.api.domain.dadosGrupo.*;
+import com.rateiopro.api.domain.dadosUsuario.DadosAtualizacaoUsuario;
 import com.rateiopro.api.domain.dadosUsuario.Usuario;
 import com.rateiopro.api.domain.dadosUsuario.UsuarioRepository;
 import com.rateiopro.api.domain.dadosUsuarioGrupo.UsuarioGrupo;
@@ -120,9 +121,9 @@ class GrupoControllerTest {
         var token = new UsernamePasswordAuthenticationToken(usuarioMockado,
                 null,usuarioMockado.getAuthorities());
 
-        DadosCadastroGrupo dadosGrupo = new DadosCadastroGrupo(grupoCriado);
+        DadosAtualizacaoGrupo atualizacaoGrupo = new DadosAtualizacaoGrupo(grupoAtualizado);
 
-        String jsonRequest = objectMapper.writeValueAsString(dadosGrupo);
+        String jsonRequest = objectMapper.writeValueAsString(atualizacaoGrupo);
 
         when(grupoService.buscarGrupoParaDono(eq(1L),eq(1L))).thenReturn(grupoCriado);
 
