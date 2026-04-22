@@ -1,10 +1,31 @@
 version: '3.8'
 
 services:
+
+  db:
+    image: mysql:8.0
+    container_name: rateio-db
+    restart: always
+    command:
+      --innodb-buffer-pool-size=128M
+      --max-connections=50
+      --performance-schema=OFF
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: rateio-pro-db
+    volumes:
+      - db_data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          memory: 300m
+
   api:
     image: rateio-api
     container_name: rateio-api
     restart: always
+    depends_on:
+      - db
     ports:
       - "8081:8080"
 
@@ -15,9 +36,9 @@ services:
 
     environment:
       SPRING_PROFILES_ACTIVE: prod
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/rateio-pro-db?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
       SENHA_SECRETA: ${SENHA_SECRETA}
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
