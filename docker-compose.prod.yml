@@ -21,6 +21,7 @@ services:
           memory: 300m
 
   api:
+    build: .
     image: rateio-api
     container_name: rateio-api
     restart: always
@@ -44,3 +45,6 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+
+volumes:
+  db_data:
